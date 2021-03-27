@@ -1,0 +1,1 @@
+(()=>{"use strict";var __webpack_modules__={909:()=>{eval('\r\n\r\nclass App {\r\n    static create()\r\n    {\r\n        console.log("hello world");\r\n    }\r\n}\r\ndocument.addEventListener("DOMContentLoaded", App.create)\n\n//# sourceURL=webpack://package/./src/index.js?')}},__webpack_exports__={};__webpack_modules__[909]()})();
