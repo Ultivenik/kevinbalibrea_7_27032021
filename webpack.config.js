@@ -9,10 +9,9 @@ module.exports = {
     optimization: {
         usedExports: true,
     },
-    mode: 'production',
     output: {
         path: path.resolve(__dirname, './dist'),
-        filename: '[name].js',
+        filename: 'main.js',
         clean:true,
     },
     module: {

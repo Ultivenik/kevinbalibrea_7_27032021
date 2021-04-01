@@ -1,1 +1,8 @@
-
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.row .input-group .fas .fa-search  {
+    z-index: 100;
+}

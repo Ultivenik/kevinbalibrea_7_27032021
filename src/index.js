@@ -1,9 +1,10 @@
 import './style.css'
+import Page from './Pages/Page'
 
 class App {
     static create()
     {
-        console.log("hello world");
+        Page.create()
     }
 }
 document.addEventListener("DOMContentLoaded", App.create)

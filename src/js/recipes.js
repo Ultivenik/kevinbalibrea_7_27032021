@@ -1,4 +1,5 @@
-[
+
+const recipes = [
     {
         "id": 1,
         "name" : "Limonade de Coco",
@@ -75,7 +76,7 @@
         "ingredients": [
             {
                 "ingredient": "Poulet",
-                "quantity" : 1          
+                "quantity" : 1
             },
             {
                 "ingredient": "Lait de coco",
@@ -1722,3 +1723,5 @@
         "ustensils":["rouleau à patisserie","fouet"]
     }
 ]
+
+export default {recipes}
