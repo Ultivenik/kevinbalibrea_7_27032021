@@ -6,7 +6,7 @@ export default class Header {
     {
         const header = DOMElement.create("header")
         const img = Img.create({source: "./logo.png", altText: "logo"})
-        img.classList.add("mx-auto", "d-block", "w-3")
+        img.classList.add("mx-auto", "d-block", "w-3", "mt-5", "mb-5")
 
         header.appendChild(img)
         return header
