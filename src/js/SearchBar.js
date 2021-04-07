@@ -3,13 +3,13 @@ import Input from "./Input"
 import SearchTag from "./SearchTag"
 import Card from "./Cards"
 import recipes from "./recipes"
+import Algo from "./Algo"
 
 const recipeArray = recipes.recipes
 export default class SearchBar
 {
     static create()
     {
-        console.log(recipeArray);
         const row = DOMElement.create("div")
         const childRow = DOMElement.create("div")
         const inputGroup = DOMElement.create("div")
@@ -47,9 +47,14 @@ export default class SearchBar
         let word = e.target.value
         let div = DOMElement.create("div")
         div.classList.add("d-flex", "justify-content-between", "body-search")
-        recipeArray.map(item => {
-            let cards = Card.create(item.name, item.time, item.description, item)
-            div.appendChild(cards)
+        let recipes = recipeArray.map(item => {return item})
+        let arr = []
+        recipes.forEach(filter =>{
+            arr.push(filter.name)
+            if (Algo.QuickSort(arr).indexOf(word) > 0) {
+                let cards = Card.create(filter.name, filter.time, filter.description, filter)
+                div.appendChild(cards)
+            }
         })
         document.querySelector("main").appendChild(div)
     }
