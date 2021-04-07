@@ -34,9 +34,9 @@ export default class SearchBar
     // creating a tag on submit
    static tagResult(e)
     {
-        let parent = e.target.parentElement
-        let word = e.target.value
-        let tag = SearchTag.create(word)
+        const parent = e.target.parentElement
+        const word = e.target.value
+        const tag = SearchTag.create(word)
         if (e.key === "Enter") {
             parent.parentElement.appendChild(tag)
         }
@@ -44,18 +44,16 @@ export default class SearchBar
 
     static mainSort(e)
     {
-        let word = e.target.value
-        let div = DOMElement.create("div")
+        const word = e.target.value
+        const div = DOMElement.create("div")
+        const filterRecipe = recipeArray.filter(filtered => Algo.QuickSort(filtered.name).indexOf(word) > 0)
+
+        for (let recipe of filterRecipe) {
+            const cards = Card.create(recipe.name, recipe.time, recipe.description, recipe)
+            div.appendChild(cards)
+        }
+
         div.classList.add("d-flex", "justify-content-between", "body-search")
-        let recipes = recipeArray.map(item => {return item})
-        let arr = []
-        recipes.forEach(filter =>{
-            arr.push(filter.name)
-            if (Algo.QuickSort(arr).indexOf(word) > 0) {
-                let cards = Card.create(filter.name, filter.time, filter.description, filter)
-                div.appendChild(cards)
-            }
-        })
         document.querySelector("main").appendChild(div)
     }
 }
