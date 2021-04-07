@@ -46,14 +46,21 @@ export default class SearchBar
     {
         const word = e.target.value
         const div = DOMElement.create("div")
-        const filterRecipe = recipeArray.filter(filtered => Algo.QuickSort(filtered.name).indexOf(word) > 0)
+
+        // Filtering by recipe, ingredients, ustensils or appliance
+        const filterRecipe = recipeArray.filter(filtered =>
+                                                            Algo.QuickSort(filtered.name).indexOf(word) > 0 ||
+                                                            Algo.QuickSort(filtered.ingredients).indexOf(word) > 0 ||
+                                                            Algo.QuickSort(filtered.ustensils).indexOf(word) > 0 ||
+                                                            Algo.QuickSort(filtered.appliance).indexOf(word) > 0
+        )
 
         for (let recipe of filterRecipe) {
             const cards = Card.create(recipe.name, recipe.time, recipe.description, recipe)
             div.appendChild(cards)
         }
 
-        div.classList.add("d-flex", "justify-content-between", "body-search")
+        div.classList.add("d-flex", "justify-content-between","flex-wrap", "body-search")
         document.querySelector("main").appendChild(div)
     }
 }

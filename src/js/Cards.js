@@ -21,7 +21,7 @@ export default class Card
         title.classList.add("card-title")
         recipeText.classList.add("card-text")
         icon.classList.add("far", "fa-clock")
-        time.classList.add("d-flex")
+        time.classList.add("d-flex", "align-items-baseline")
 
         img.src = "..."
 
@@ -30,12 +30,12 @@ export default class Card
         container.appendChild(listTextContainer)
         textContainer.appendChild(title)
         textContainer.appendChild(time)
-        time.appendChild(icon)
+        time.prepend(icon)
         listTextContainer.appendChild(ingredientList)
         listTextContainer.appendChild(recipeText)
 
         title.innerHTML = titleText
-        time.innerHTML = timeText + "min"
+        time.innerHTML = "<i class='far fa-clock me-2'></i>" + timeText + "min"
         recipeText.innerHTML = paragraph
 
         recipe.ingredients.map(item =>{
