@@ -37,7 +37,7 @@ export default class Main {
                 let ingredientResult = ingredient.ingredient
                 // arr.push(ingredient.ingredient)
                 if (word.length >= 3) {
-                    console.log("TOTO FILS DE TITI");
+                    console.log("TOTO");
                 }
                 // console.log(Algo.QuickSort(ingredientResult.filter(a => )))
             })
