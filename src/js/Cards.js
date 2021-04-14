@@ -2,7 +2,7 @@ import DOMElement from './DOMElement'
 
 export default class Card
 {
-    static create(titleText, timeText, paragraph, recipe)
+    static create(recipe)
     {
         const container = DOMElement.create("div")
         const img = DOMElement.create("img")
@@ -34,9 +34,9 @@ export default class Card
         listTextContainer.appendChild(ingredientList)
         listTextContainer.appendChild(recipeText)
 
-        title.innerHTML = titleText
-        time.innerHTML = "<i class='far fa-clock me-2'></i>" + timeText + "min"
-        recipeText.innerHTML = paragraph
+        title.innerHTML = recipe.name
+        time.innerHTML = "<i class='far fa-clock me-2'></i>" + recipe.time + "min"
+        recipeText.innerHTML = recipe.description
 
         recipe.ingredients.map(item =>{
             const list = DOMElement.create("li")
