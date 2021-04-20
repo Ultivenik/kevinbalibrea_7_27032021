@@ -1,0 +1,22 @@
+{
+  "name": "les-petits-plats",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ultivenik/kevinbalibrea_7_27032021.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ultivenik/kevinbalibrea_7_27032021/issues"
+  },
+  "homepage": "https://github.com/Ultivenik/kevinbalibrea_7_27032021#readme",
+  "devDependencies": {
+    "vite": "^2.1.5"
+  }
+}

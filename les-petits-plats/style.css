@@ -16,6 +16,9 @@ body .col-9 .dropdown{
 button[data-bs-toggle]{
     border-radius: 5px;
 }
+.filterResult .dropdown{
+    border-radius: 5px;
+}
 .dropdown .dropdown-menu{
     width: 100%;
     border: 0;
@@ -30,4 +33,3 @@ button[data-bs-toggle]{
 .card{
     width: 33.33%;
 }
-
