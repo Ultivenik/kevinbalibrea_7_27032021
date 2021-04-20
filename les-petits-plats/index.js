@@ -87,20 +87,6 @@ input.addEventListener("input", (e)=>{
                 results.push(createCards(recipe))
                 quickSort(results)
             }
-            // // Est que l'input %% ingredients.ingredient ?
-            // recipe.ingredients.forEach((ingredient) => {
-            //     if (ingredient.ingredient.toLowerCase().indexOf(word) !== -1) {
-            //         results.push(createCards(recipe))
-            //         quickSort(results)
-            //     }
-            // })
-            // // Est que l'input %% ustensil ?
-            // recipe.ustensils.forEach((ustensil) => {
-            //     if (ustensil.toLowerCase().indexOf(word) !== -1) {
-            //         results.push(createCards(recipe))
-            //         quickSort(results)
-            //     }
-            // })
         })
         results.forEach((result) => {
             recipeContainer.appendChild(result)
