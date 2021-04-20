@@ -1,5 +1,5 @@
 import './style.css'
-import recipes from './js/recipes'
+import recipes from './recipes'
 
 // HEADER ********************************************************************
 const header = document.createElement("header")
@@ -67,47 +67,19 @@ input.addEventListener("keydown", (e) =>{
 input.addEventListener("input", (e)=>{
     if (e.target.value.length >= 3) {
         let word = e.target.value
-
-        recipeArray.forEach((recipe) => {
-            const name = recipe.name.toLowerCase()
-            const appliance = recipe.appliance.toLowerCase()
-            const ingredient = recipe.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
-            const ustensil = recipe.ustensils.map(ustensil => {return ustensil.toLowerCase()})
-            // Est que l'input %% name ?
-            if (name.indexOf(word) !== -1) {
-                results.push(createCards(recipe))
-                quickSort(results)
-            }else if (appliance.indexOf(word) !== -1) {
-                results.push(createCards(recipe))
-                quickSort(results)
-            }else if (ingredient.indexOf(word) !== -1) {
-                results.push(createCards(recipe))
-                quickSort(results)
-            }else if (ustensil.indexOf(word) !== -1) {
-                results.push(createCards(recipe))
-                quickSort(results)
+        search(recipeArray, (item)=>{
+            item.name.includes(word)
+            new RegExp(word).test(item.name)
+            if (item.name.indexOf(word) === word) {
+                results.push(createCards(item))
+            }else {
+                recipeContainer.innerHTML = ""
+                results.length = 0
             }
-            // // Est que l'input %% ingredients.ingredient ?
-            // recipe.ingredients.forEach((ingredient) => {
-            //     if (ingredient.ingredient.toLowerCase().indexOf(word) !== -1) {
-            //         results.push(createCards(recipe))
-            //         quickSort(results)
-            //     }
-            // })
-            // // Est que l'input %% ustensil ?
-            // recipe.ustensils.forEach((ustensil) => {
-            //     if (ustensil.toLowerCase().indexOf(word) !== -1) {
-            //         results.push(createCards(recipe))
-            //         quickSort(results)
-            //     }
-            // })
+            results.forEach((result) => {
+                recipeContainer.appendChild(result)
+            })
         })
-        results.forEach((result) => {
-            recipeContainer.appendChild(result)
-        })
-    }else {
-        recipeContainer.innerHTML = ""
-        results.length = 0
     }
 })
 main.appendChild(recipeContainer)
@@ -246,5 +218,12 @@ function searchtag(contentText) {
 }
 
 function search(array, searchAction){
-    
+    const filteredElement = []
+    for (const item of array) {
+        const element = searchAction(item)
+        if (element) {
+            filteredElement.push(element)
+        }
+    }
+    return filteredElement
 }
