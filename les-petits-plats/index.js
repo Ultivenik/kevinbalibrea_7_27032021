@@ -1,5 +1,5 @@
 import './style.css'
-import recipes from './js/recipes'
+import recipes from './recipes'
 
 // HEADER ********************************************************************
 const header = document.createElement("header")
