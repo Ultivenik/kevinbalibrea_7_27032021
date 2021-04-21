@@ -67,19 +67,32 @@ input.addEventListener("keydown", (e) =>{
 input.addEventListener("input", (e)=>{
     if (e.target.value.length >= 3) {
         let word = e.target.value
-        search(recipeArray, (item)=>{
-            item.name.includes(word)
-            new RegExp(word).test(item.name)
-            if (item.name.indexOf(word) === word) {
-                results.push(createCards(item))
-            }else {
-                recipeContainer.innerHTML = ""
-                results.length = 0
+        const results = search(recipeArray, (item)=>{
+            if (item.name.toLowerCase().includes(word)) {
+                return item
             }
-            results.forEach((result) => {
-                recipeContainer.appendChild(result)
+            const ingredients = search(item.ingredients, (ingredient) =>{
+                if (ingredient.ingredient.toLowerCase().includes(word)) {
+                    return ingredient
+                }
             })
+            const ustensils = search(item.ustensils, (ustensil) =>{
+                if (ustensil.toLowerCase().includes(word)) {
+                    return ustensil
+                }
+            })
+            if (ingredients.length > 0) {
+                return item
+            }
+            if (ustensils.length > 0) {
+                return item
+            }
         })
+        quickSort(results).forEach((result) => {
+            recipeContainer.appendChild(createCards(result))
+        })
+    }else{
+        recipeContainer.innerHTML = ""
     }
 })
 main.appendChild(recipeContainer)
