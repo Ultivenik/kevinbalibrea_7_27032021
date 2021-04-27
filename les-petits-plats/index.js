@@ -16,9 +16,15 @@ document.body.appendChild(main)
 
 // FILTER ********************************************************************
 const filterContainer = document.createElement("div")
-const ingredientFilter = filter("Ingredients", "primary")
-const applianceFilter = filter("Appareil", "success")
-const ustensilFilter = filter("Ustensiles", "danger")
+
+// INGREDIENTS
+const ingredientFilter = filter("primary", "Ingrédients")
+
+// APPLIANCE
+const applianceFilter = filter("success", "Appareil")
+
+// USTENSILS
+const ustensilFilter = filter("danger", "Ustensiles")
 
 filterContainer.classList.add("d-flex", "filterResult")
 applianceFilter.classList.add("ms-3", "me-3")
@@ -54,6 +60,7 @@ filterContainer.appendChild(ingredientFilter)
 filterContainer.appendChild(applianceFilter)
 filterContainer.appendChild(ustensilFilter)
 
+// SEARCH BY TAG
 input.addEventListener("keydown", (e) =>{
     const parent = e.target.parentElement
     const word = e.target.value
@@ -64,49 +71,31 @@ input.addEventListener("keydown", (e) =>{
         parent.parentElement.appendChild(tag)
     }
 })
+// Search by name, appliance, ingredient or ustensil
 input.addEventListener("input", (e)=>{
     if (e.target.value.length >= 3) {
         let word = e.target.value
-        // recipeArray.forEach((recipe) => {
-        //     const name = recipe.name.toLowerCase()
-        //     const appliance = recipe.appliance.toLowerCase()
-        //     const ingredient = recipe.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
-        //     const ustensil = recipe.ustensils.map(ustensil => {return ustensil.toLowerCase()})
-        //     // Est que l'input %% name ?
-        //     if (name.indexOf(word) !== -1) {
-        //         results.push(createCards(recipe))
-        //         quickSort(results)
-        //     }else if (appliance.indexOf(word) !== -1) {
-        //         results.push(createCards(recipe))
-        //         quickSort(results)
-        //     }else if (ingredient.indexOf(word) !== -1) {
-        //         results.push(createCards(recipe))
-        //         quickSort(results)
-        //     }else if (ustensil.indexOf(word) !== -1) {
-        //         results.push(createCards(recipe))
-        //         quickSort(results)
-        //     }
-        // })
         search(recipeArray, (item)=>{
+            const name = item.name.toLowerCase()
+            const appliance = item.appliance.toLowerCase()
             const ingredient = item.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
             const ustensil = item.ustensils.map(ustensil => {return ustensil.toLowerCase()})
-            if (item.name.toLowerCase().indexOf(word) !== -1) {
-                return item
+            if (name.includes(word) > 0) {
+                return results.push(item)
             }
-            if (item.appliance.toLowerCase().indexOf(word) !== -1) {
-                return item
+            if (appliance.includes(word) > 0) {
+                return results.push(item)
             }
-            if (ingredient.indexOf(word) !== -1) {
-                return item
+            if (ingredient.includes(word) > 0) {
+                return results.push(item)
             }
-            if (ustensil.indexOf(word) !== -1) {
-                return item
+            if (ustensil.includes(word) > 0) {
+                return results.push(item)
             }
-            recipeContainer.appendChild(createCards(item))
         })
-        // results.forEach((result) => {
-        //     recipeContainer.appendChild(result)
-        // })
+        quickSort(results).forEach((result) => {
+            recipeContainer.appendChild(createCards(result))
+        })
     }else {
         recipeContainer.innerHTML = ""
         results.length = 0
@@ -114,42 +103,79 @@ input.addEventListener("input", (e)=>{
 })
 main.appendChild(recipeContainer)
 
-function filter(content, color)
-{
-    const filter = document.createElement("div")
-    const filterButton = document.createElement("button")
-    const filterInput = document.createElement("input")
-    const filterList = document.createElement("ul")
-    const icon = document.createElement("i")
+// ***************************************************************** FUNCTIONS **************************************************************************
+// DOM CONSTRUCT
+function filter(color, type) {
+    const containerFilter = container(color)
+    const filterIcon = iconFilter()
+    const filterButton = button(color, type)
+    const filterSearchBar = searchBarFilter(color, type)
+    const filterListContainer = listContainer(color)
+    containerFilter.appendChild(filterButton)
+    containerFilter.appendChild(filterIcon)
+    containerFilter.appendChild(filterListContainer)
 
-    filter.classList.add("dropdown", `bg-${color}`, "rounded-3")
-    filterButton.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
-    filterList.classList.add("dropdown-menu", `bg-${color}`)
-    icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light")
-
-    filterButton.innerHTML = content
-    filterInput.placeholder = "Rechercher un" + content
-    filterButton.dataset.bsToggle = "dropdown"
-
-    filter.appendChild(filterButton)
-    filter.appendChild(filterList)
-    filter.appendChild(icon)
-
-    // Swap button into search bar for filtering
-    filter.addEventListener("click", () => {
-        filter.replaceChild(filterInput, filterButton)
-        filterInput.focus()
-        filterInput.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
-        icon.classList.replace("fa-chevron-down", "fa-chevron-up")
-    })
-
-    filterInput.addEventListener("blur", () => {
-        filter.replaceChild(filterButton, filterInput)
-        icon.classList.replace("fa-chevron-up", "fa-chevron-down")
-    })
-    return filter
+    return containerFilter
 }
 
+function container(color)
+{
+    const containerBox = document.createElement("div")
+    containerBox.classList.add("dropdown", `bg-${color}`, "rounded-3")
+    return containerBox
+}
+
+function button(color, content, icon, parent) {
+    const filterButton = document.createElement("button")
+    filterButton.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
+    filterButton.innerHTML = content
+    filterButton.dataset.bsToggle = "dropdown"
+
+    // changing button into text field
+    // filterButton.addEventListener("click", ()=>{
+    //     const listContainer = filterListContainer(color)
+    //     const searchBar = searchBarFilter(`${content}`, filterButton, icon, parent, listContainer)
+    //     searchBar.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
+    //     icon.classList.replace("fa-chevron-down", "fa-chevron-up")
+    //     parent.appendChild(listContainer)
+    //     parent.replaceChild(searchBar, filterButton)
+    //     searchBar.focus()
+    // })
+
+    return filterButton
+}
+
+function searchBarFilter(color, content) {
+    const filterInput = document.createElement("input")
+    filterInput.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
+    filterInput.placeholder = "Rechercher un " + content
+    // changing text field into button on blur
+    // filterInput.addEventListener("blur", ()=>{
+    //     parent.replaceChild(button, filterInput)
+    //     icon.classList.replace("fa-chevron-up", "fa-chevron-down")
+    //     list.remove()
+    // })
+
+    return filterInput
+}
+
+function listContainer(color) {
+    const filterList = document.createElement("ul")
+    filterList.classList.add("dropdown-menu", `bg-${color}`)
+    return filterList
+}
+
+function createList(content) {
+    const list = document.createElement("li")
+    list.innerHTML = content
+    return list
+}
+
+function iconFilter(){
+    const icon = document.createElement("i")
+    icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light")
+    return icon
+}
 // CARDS ********************************************************************
 
 function createCards(recipe)
@@ -250,7 +276,7 @@ function searchtag(contentText) {
     })
     return span
 }
-
+// SEARCH ALGORYTHM
 function search(array, searchAction){
     const filteredELements = array.filter((item) => searchAction(item))
     return filteredELements
