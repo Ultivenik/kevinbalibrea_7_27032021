@@ -10,8 +10,11 @@ body .col-9 .dropdown{
     border-radius: 5px !important;
 }
 .dropdown input[data-bs-toggle]{
-    outline: none;
     border-radius: 5px;
+}
+.dropdown input:focus{
+    outline: none !important;
+    border: 0;
 }
 button[data-bs-toggle]{
     border-radius: 5px;
@@ -25,6 +28,8 @@ button[data-bs-toggle]{
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     transform: translate(0px, 54px) !important;
+    position: absolute;
+    top: 0;
 }
 .toast{
     width: auto;

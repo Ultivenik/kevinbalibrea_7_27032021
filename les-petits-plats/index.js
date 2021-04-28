@@ -18,13 +18,19 @@ document.body.appendChild(main)
 const filterContainer = document.createElement("div")
 
 // INGREDIENTS
-const ingredientFilter = filter("primary", "Ingrédients")
+const ingredientFilter = filter("primary", "Ingrédients", "ingredient")
+const ingredientFilterListContainer = listContainer(color)
+ingredientFilter.appendChild(ingredientFilterListContainer)
 
 // APPLIANCE
-const applianceFilter = filter("success", "Appareil")
+const applianceFilter = filter("success", "Appareil", "appliance")
+const applianceFilterListContainer = listContainer(color)
+applianceFilter.appendChild(applianceFilterListContainer)
 
 // USTENSILS
-const ustensilFilter = filter("danger", "Ustensiles")
+const ustensilFilter = filter("danger", "Ustensiles", "ustensil")
+const ustensilFilterListContainer = listContainer(color)
+ustensilFilter.appendChild(ustensilFilterListContainer)
 
 filterContainer.classList.add("d-flex", "filterResult")
 applianceFilter.classList.add("ms-3", "me-3")
@@ -105,16 +111,28 @@ main.appendChild(recipeContainer)
 
 // ***************************************************************** FUNCTIONS **************************************************************************
 // DOM CONSTRUCT
-function filter(color, type) {
+function filter(color, type, nameClass) {
     const containerFilter = container(color)
     const filterIcon = iconFilter()
     const filterButton = button(color, type)
     const filterSearchBar = searchBarFilter(color, type)
-    const filterListContainer = listContainer(color)
+    // const filterListContainer = listContainer(color)
+    containerFilter.classList.add(nameClass)
     containerFilter.appendChild(filterButton)
     containerFilter.appendChild(filterIcon)
     containerFilter.appendChild(filterListContainer)
 
+    filterButton.addEventListener("click", ()=>{
+        containerFilter.replaceChild(filterSearchBar, filterButton)
+        filterIcon.classList.replace("fa-chevron-down", "fa-chevron-up")
+        // filterListContainer.style.display= "block"
+        filterSearchBar.focus()
+    })
+    filterSearchBar.addEventListener("blur", ()=>{
+        containerFilter.replaceChild(filterButton, filterSearchBar)
+        filterIcon.classList.replace("fa-chevron-up", "fa-chevron-down")
+        // filterListContainer.style.display= "none"
+    })
     return containerFilter
 }
 
@@ -125,22 +143,10 @@ function container(color)
     return containerBox
 }
 
-function button(color, content, icon, parent) {
+function button(color, content) {
     const filterButton = document.createElement("button")
     filterButton.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
     filterButton.innerHTML = content
-    filterButton.dataset.bsToggle = "dropdown"
-
-    // changing button into text field
-    // filterButton.addEventListener("click", ()=>{
-    //     const listContainer = filterListContainer(color)
-    //     const searchBar = searchBarFilter(`${content}`, filterButton, icon, parent, listContainer)
-    //     searchBar.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
-    //     icon.classList.replace("fa-chevron-down", "fa-chevron-up")
-    //     parent.appendChild(listContainer)
-    //     parent.replaceChild(searchBar, filterButton)
-    //     searchBar.focus()
-    // })
 
     return filterButton
 }
@@ -149,12 +155,6 @@ function searchBarFilter(color, content) {
     const filterInput = document.createElement("input")
     filterInput.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
     filterInput.placeholder = "Rechercher un " + content
-    // changing text field into button on blur
-    // filterInput.addEventListener("blur", ()=>{
-    //     parent.replaceChild(button, filterInput)
-    //     icon.classList.replace("fa-chevron-up", "fa-chevron-down")
-    //     list.remove()
-    // })
 
     return filterInput
 }
