@@ -16,12 +16,12 @@ body .col-9 .dropdown{
     outline: none !important;
     border: 0;
 }
-button[data-bs-toggle]{
+/* button[data-bs-toggle]{
     border-radius: 5px;
 }
 .filterResult .dropdown{
     border-radius: 5px;
-}
+} */
 .dropdown .dropdown-menu{
     width: 100%;
     border: 0;
@@ -31,7 +31,14 @@ button[data-bs-toggle]{
     position: absolute;
     top: 0;
 }
-.toast{
+.dropdown .dropdown-item{
+    width: 33%;
+    cursor:pointer
+}
+.row .dropdown .dropdown-item :hover{
+    color: red;
+}
+.input-container .toast{
     width: auto;
     cursor: pointer;
 }
