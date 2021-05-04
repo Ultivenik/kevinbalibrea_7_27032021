@@ -18,6 +18,7 @@ const filter = (color, type, nameClass) => {
     containerFilter.appendChild(filterIcon)
     containerFilter.appendChild(filterListContainer)
     filterListContainer.style.display = "none"
+
     filterButton.addEventListener("click", () => {
         containerFilter.replaceChild(filterSearchBar, filterButton)
         filterIcon.classList.replace("fa-chevron-down", "fa-chevron-up")
@@ -26,7 +27,6 @@ const filter = (color, type, nameClass) => {
         containerFilter.classList.add("col-4")
         filterSearchBar.focus()
 
-        //ce qui se passe quand on clique sur une liste
         list.forEach(item =>{
             item.addEventListener("click", () =>{
                 containerFilter.replaceChild(filterButton, filterSearchBar)
@@ -37,7 +37,6 @@ const filter = (color, type, nameClass) => {
             })
         })
     })
-
 
     return containerFilter
 }
@@ -209,7 +208,7 @@ const tagFilterList = (itemList, nameclass) => {
 const header = document.createElement("header")
 const logo = document.createElement("img")
 logo.src = "./logo.png"
-logo.classList.add("mx-auto", "d-block", "w-3", "mt-5", "mb-5")
+logo.classList.add("mx-auto", "d-block", "w-3", "pt-5", "pb-5")
 document.body.appendChild(header)
 header.appendChild(logo)
 header.addEventListener("click", ()=>{console.clear()})
@@ -269,8 +268,10 @@ input.addEventListener("input", (e)=>{
     if ( e.target.value.length >= 3 ) {
         let word = e.target.value
         recipeContainer.innerHTML = ""
-        if (document.querySelector(".dropdown-menu") !== null) {
-            document.querySelector(".dropdown-menu").innerHTML = ""
+        if (document.querySelectorAll(".dropdown-menu") !== null) {
+            document.querySelectorAll(".dropdown-menu").forEach(list =>{
+                list.innerHTML = ""
+            })
         }
         searchAlgo(recipeArray, (item)=>{
             const name = item.name.toLowerCase()
@@ -294,6 +295,9 @@ input.addEventListener("input", (e)=>{
     }else {
         recipeContainer.innerHTML = ""
         results.length = 0
+        document.querySelectorAll(".dropdown-menu").forEach(list =>{
+            list.innerHTML = ""
+        })
     }
 })
 main.appendChild(recipeContainer)

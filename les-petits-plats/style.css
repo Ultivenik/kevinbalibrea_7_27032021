@@ -3,6 +3,9 @@
     margin: 0;
     padding: 0;
 }
+body{
+    height: 100vh;
+}
 .col-9 .row .mx-auto .input-group i  {
     z-index: 100;
 }
