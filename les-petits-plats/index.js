@@ -269,6 +269,9 @@ input.addEventListener("input", (e)=>{
     if ( e.target.value.length >= 3 ) {
         let word = e.target.value
         recipeContainer.innerHTML = ""
+        if (document.querySelector(".dropdown-menu") !== null) {
+            document.querySelector(".dropdown-menu").innerHTML = ""
+        }
         searchAlgo(recipeArray, (item)=>{
             const name = item.name.toLowerCase()
             const appliance = item.appliance.toLowerCase()
