@@ -1,141 +1,92 @@
-import './style.css'
-import recipes from './recipes'
 
-// HEADER ********************************************************************
-const header = document.createElement("header")
-const logo = document.createElement("img")
-logo.src = "./logo.png"
-logo.classList.add("mx-auto", "d-block", "w-3", "mt-5", "mb-5")
-document.body.appendChild(header)
-header.appendChild(logo)
+const recipeArray = Window.DATA
+// DOM CONSTRUCT
+const filter = (color, type, nameClass) => {
+    const containerFilter = container(color)
+    const filterIcon = iconFilter()
+    const filterButton = button(color, type)
+    const filterSearchBar = searchBarFilter(color, nameClass)
+    const filterListContainer = listContainer(color, type)
+    const list = filterListContainer.childNodes
 
-// MAIN ********************************************************************
-const main = document.createElement("main")
-main.classList.add("col-10", "mx-auto")
-document.body.appendChild(main)
+    containerFilter.classList.add(nameClass)
+    containerFilter.appendChild(filterButton)
+    containerFilter.appendChild(filterIcon)
+    containerFilter.appendChild(filterListContainer)
+    filterListContainer.style.display = "none"
 
-// FILTER ********************************************************************
-const filterContainer = document.createElement("div")
-const ingredientFilter = filter("Ingredients", "primary")
-const applianceFilter = filter("Appareil", "success")
-const ustensilFilter = filter("Ustensiles", "danger")
+    filterButton.addEventListener("click", () => {
+        containerFilter.replaceChild(filterSearchBar, filterButton)
+        filterIcon.classList.replace("fa-chevron-down", "fa-chevron-up")
+        filterListContainer.removeAttribute("style")
+        filterListContainer.classList.add("d-flex", "flex-wrap")
+        containerFilter.classList.add("col-4")
+        filterSearchBar.focus()
 
-filterContainer.classList.add("d-flex", "filterResult")
-applianceFilter.classList.add("ms-3", "me-3")
-
-
-// CONTAINER & SEARCHBAR ********************************************************************
-const row = document.createElement("div")
-const mxAuto = document.createElement("div")
-const inputGroup = document.createElement("div")
-const input = document.createElement("input")
-const icon = document.createElement("i")
-const recipeContainer = document.createElement("div")
-const results = []
-const recipeArray = recipes.recipes
-
-row.classList.add("row")
-mxAuto.classList.add("mx-auto")
-inputGroup.classList.add("input-group", "mb-3")
-input.classList.add("form-control", "p-3", "bg-light")
-icon.classList.add("fas", "fa-search", "fs-3", "position-absolute", "end-0", "me-3", "mt-2")
-recipeContainer.classList.add("d-flex", "justify-content-between","flex-wrap", "body-search", "mt-5")
-
-input.type = "text"
-input.placeholder = "Rechercher un ingrédient, appareil, ustensiles ou une recette"
-
-main.appendChild(row)
-row.appendChild(mxAuto)
-mxAuto.appendChild(inputGroup)
-inputGroup.appendChild(input)
-inputGroup.appendChild(icon)
-main.appendChild(filterContainer)
-filterContainer.appendChild(ingredientFilter)
-filterContainer.appendChild(applianceFilter)
-filterContainer.appendChild(ustensilFilter)
-
-input.addEventListener("keydown", (e) =>{
-    const parent = e.target.parentElement
-    const word = e.target.value
-    const tag = searchtag(word)
-    const error = document.createElement("div")
-    error.innerHTML = "Aucune recette ne correspond à votre critère... vous pouvez chercher « tarte aux pommes », « poisson », etc"
-    if (e.key === "Enter") {
-        parent.parentElement.appendChild(tag)
-    }
-})
-input.addEventListener("input", (e)=>{
-    if (e.target.value.length >= 3) {
-        let word = e.target.value
-        const results = search(recipeArray, (item)=>{
-            if (item.name.toLowerCase().includes(word)) {
-                return item
-            }
-            const ingredients = search(item.ingredients, (ingredient) =>{
-                if (ingredient.ingredient.toLowerCase().includes(word)) {
-                    return ingredient
-                }
+        list.forEach(item =>{
+            item.addEventListener("click", () =>{
+                containerFilter.replaceChild(filterButton, filterSearchBar)
+                filterIcon.classList.replace("fa-chevron-up", "fa-chevron-down")
+                filterListContainer.classList.remove("d-flex", "flex-wrap")
+                containerFilter.classList.remove("col-4")
+                filterListContainer.style.display = "none"
             })
-            const ustensils = search(item.ustensils, (ustensil) =>{
-                if (ustensil.toLowerCase().includes(word)) {
-                    return ustensil
-                }
-            })
-            if (ingredients.length > 0) {
-                return item
-            }
-            if (ustensils.length > 0) {
-                return item
-            }
         })
-        quickSort(results).forEach((result) => {
-            recipeContainer.appendChild(createCards(result))
-        })
-    }else{
-        recipeContainer.innerHTML = ""
-    }
-})
-main.appendChild(recipeContainer)
-
-function filter(content, color)
-{
-    const filter = document.createElement("div")
-    const filterButton = document.createElement("button")
-    const filterInput = document.createElement("input")
-    const filterList = document.createElement("ul")
-    const icon = document.createElement("i")
-
-    filter.classList.add("dropdown", `bg-${color}`, "rounded-3")
-    filterButton.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
-    filterList.classList.add("dropdown-menu", `bg-${color}`)
-    icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light")
-
-    filterButton.innerHTML = content
-    filterInput.placeholder = "Rechercher un" + content
-    filterButton.dataset.bsToggle = "dropdown"
-
-    filter.appendChild(filterButton)
-    filter.appendChild(filterList)
-    filter.appendChild(icon)
-
-    // Swap button into search bar for filtering
-    filter.addEventListener("click", () => {
-        filter.replaceChild(filterInput, filterButton)
-        filterInput.focus()
-        filterInput.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
-        icon.classList.replace("fa-chevron-down", "fa-chevron-up")
     })
 
-    filterInput.addEventListener("blur", () => {
-        filter.replaceChild(filterButton, filterInput)
-        icon.classList.replace("fa-chevron-up", "fa-chevron-down")
-    })
-    return filter
+    return containerFilter
 }
 
+const container = (color) =>
+{
+    const containerBox = document.createElement("div")
+    containerBox.classList.add("dropdown", `bg-${color}`, "rounded-3")
+    return containerBox
+}
+
+const button = (color, content) => {
+    const filterButton = document.createElement("button")
+    filterButton.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
+    filterButton.innerHTML = content
+
+    return filterButton
+}
+
+const searchBarFilter = (color, type) => {
+    const filterInput = document.createElement("input")
+    filterInput.classList.add(`bg-${color}`, "p-3", "border-0", "text-light")
+    filterInput.id = `${type}Input`
+    filterInput.placeholder = "Rechercher un " + type
+
+    return filterInput
+}
+
+const listContainer = (color, type) => {
+    const filterList = document.createElement("ul")
+    filterList.classList.add("dropdown-menu", `bg-${color}`, `${type}`)
+    filterList.id = `${type}`
+    return filterList
+}
+
+const createList = (content) => {
+    const list = document.createElement("li")
+    list.classList.add("dropdown-item", "text-light")
+    list.innerHTML = content
+    list.addEventListener("click", () => {
+        let tag = searchtag(content)
+        document.querySelector(".input-container").appendChild(tag)
+    })
+    return list
+}
+
+const iconFilter = () => {
+    const icon = document.createElement("i")
+    icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light")
+    return icon
+}
 // CARDS ********************************************************************
 
-function createCards(recipe)
+const createCards = (recipe) =>
 {
     const container = document.createElement("div")
     const img = document.createElement("img")
@@ -173,7 +124,11 @@ function createCards(recipe)
 
     recipe.ingredients.map(item =>{
         const list = document.createElement("li")
-        list.innerHTML = `${item.ingredient}: ${item.quantity} ${item.unit} `
+        if (item.quantity === undefined || item.unit === undefined) {
+            list.innerHTML = `${item.ingredient}`
+        }else{
+            list.innerHTML = `${item.ingredient}: ${item.quantity} ${item.unit} `
+        }
         ingredientList.appendChild(list)
     })
     return container
@@ -181,7 +136,7 @@ function createCards(recipe)
 
 // SORTING ALGORYTHM ********************************************************************
 
-function quickSort(array)
+const quickSort = (array) =>
 {
     if (array.length === 1) {
         return array
@@ -206,9 +161,9 @@ function quickSort(array)
     }
 }
 
-// SEARCH TAGS ********************************************************************
+// SEARCH TAGS ****************************************************************************
 
-function searchtag(contentText) {
+const searchtag = (contentText) => {
     let span = document.createElement("div")
     let containerContent = document.createElement("div")
     let content = document.createElement("div")
@@ -229,6 +184,13 @@ function searchtag(contentText) {
     })
     return span
 }
+const tagFilterList = (itemList, nameclass) => {
+    const list = createList(itemList)
+    if (document.querySelector(nameclass)) {
+        document.querySelector(nameclass).appendChild(list)
+    }
+    return list
+}
 
 function search(array, searchAction){
     const filteredElement = []
@@ -240,3 +202,109 @@ function search(array, searchAction){
     }
     return filteredElement
 }
+
+// HEADER ********************************************************************
+const header = document.createElement("header")
+const logo = document.createElement("img")
+logo.src = "./logo.png"
+logo.classList.add("mx-auto", "d-block", "w-3", "pt-5", "pb-5")
+document.body.appendChild(header)
+header.appendChild(logo)
+header.addEventListener("click", ()=>{console.clear()})
+
+// MAIN ********************************************************************
+const main = document.createElement("main")
+main.classList.add("col-10", "mx-auto")
+document.body.appendChild(main)
+
+// FILTER ********************************************************************
+const filterContainer = document.createElement("div")
+
+// INGREDIENTS
+const ingredientFilter = filter("primary", "Ingredients", "Ingredients")
+
+// APPLIANCE
+const applianceFilter = filter("success", "Appareils", "Appliance")
+
+// USTENSILS
+const ustensilFilter = filter("danger", "Ustensiles", "Ustensils")
+
+filterContainer.classList.add("d-flex", "filterResult")
+applianceFilter.classList.add("ms-3", "me-3")
+
+
+// CONTAINER & SEARCHBAR ********************************************************************
+const row = document.createElement("div")
+const mxAuto = document.createElement("div")
+const inputGroup = document.createElement("div")
+const input = document.createElement("input")
+const icon = document.createElement("i")
+const recipeContainer = document.createElement("div")
+const results = []
+
+row.classList.add("row")
+mxAuto.classList.add("mx-auto", "input-container")
+inputGroup.classList.add("input-group", "mb-3")
+input.classList.add("form-control", "p-3", "bg-light", "searchbar")
+icon.classList.add("fas", "fa-search", "fs-3", "position-absolute", "end-0", "me-3", "mt-2")
+recipeContainer.classList.add("d-flex", "justify-content-between","flex-wrap", "body-search", "mt-5", "mb-5")
+
+input.type = "text"
+input.placeholder = "Rechercher un ingrédient, appareil, ustensiles ou une recette"
+
+main.appendChild(row)
+row.appendChild(mxAuto)
+mxAuto.appendChild(inputGroup)
+inputGroup.appendChild(input)
+inputGroup.appendChild(icon)
+main.appendChild(filterContainer)
+filterContainer.appendChild(ingredientFilter)
+filterContainer.appendChild(applianceFilter)
+filterContainer.appendChild(ustensilFilter)
+
+// Search by name, appliance, ingredient or ustensil
+input.addEventListener("input", (e)=>{
+    if ( e.target.value.length >= 3 ) {
+        let word = e.target.value
+        recipeContainer.innerHTML = ""
+        if (document.querySelectorAll(".dropdown-menu") !== null) {
+            document.querySelectorAll(".dropdown-menu").forEach(list =>{
+                list.innerHTML = ""
+            })
+        }
+        search(recipeArray, (item)=>{
+            const ingredients = search(item.ingredients, (ingredient) =>{
+                if (ingredient.ingredient.toLowerCase().includes(word)) {
+                    return ingredient
+                }
+            })
+            const ustensils = search(item.ustensils, (ustensil) =>{
+                if (ustensil.toLowerCase().includes(word)) {
+                    return ustensil
+                }
+            })
+            if (item.name.toLowerCase().includes(word) || ingredients.includes(word) || ustensils.includes(word)) {
+                return results.push(item)
+            }
+        })
+        new Set(results).forEach((result) => {
+            recipeContainer.appendChild(createCards(result))
+            for (const ingredients of result.ingredients) {
+                tagFilterList(ingredients.ingredient, "#Ingredients")
+            }
+            tagFilterList(result.appliance, "#Appareil")
+            for (const ustensils of result.ustensils) {
+                tagFilterList(ustensils, "#Ustensiles")
+            }
+        })
+    }else {
+        recipeContainer.innerHTML = ""
+        results.length = 0
+        document.querySelectorAll(".dropdown-menu").forEach(list =>{
+            list.innerHTML = ""
+        })
+    }
+})
+main.appendChild(recipeContainer)
+
+

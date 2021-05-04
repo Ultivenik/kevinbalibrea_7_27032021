@@ -1,5 +1,4 @@
-
-const recipes = [
+Window.DATA = [
     {
         "id": 1,
         "name" : "Limonade de Coco",
@@ -1724,4 +1723,3 @@ const recipes = [
     }
 ]
 
-export default {recipes}

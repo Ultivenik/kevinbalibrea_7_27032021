@@ -3,6 +3,9 @@
     margin: 0;
     padding: 0;
 }
+body{
+    height: 100vh;
+}
 .col-9 .row .mx-auto .input-group i  {
     z-index: 100;
 }
@@ -10,23 +13,35 @@ body .col-9 .dropdown{
     border-radius: 5px !important;
 }
 .dropdown input[data-bs-toggle]{
-    outline: none;
     border-radius: 5px;
 }
-button[data-bs-toggle]{
+.dropdown input:focus{
+    outline: none !important;
+    border: 0;
+}
+/* button[data-bs-toggle]{
     border-radius: 5px;
 }
 .filterResult .dropdown{
     border-radius: 5px;
-}
+} */
 .dropdown .dropdown-menu{
     width: 100%;
     border: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     transform: translate(0px, 54px) !important;
+    position: absolute;
+    top: 0;
 }
-.toast{
+.dropdown .dropdown-item{
+    width: 33%;
+    cursor:pointer
+}
+.row .dropdown .dropdown-item :hover{
+    color: red;
+}
+.input-container .toast{
     width: auto;
     cursor: pointer;
 }
