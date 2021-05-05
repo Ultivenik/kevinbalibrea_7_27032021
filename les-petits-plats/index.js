@@ -30,6 +30,10 @@ const filter = (color, type, nameClass) => {
                 filterListContainer.classList.remove("d-flex", "flex-wrap")
                 containerFilter.classList.remove("col-4")
                 filterListContainer.style.display = "none"
+                if (filterSearchBar !== null) {
+                    containerFilter.replaceChild(filterButton, filterSearchBar)
+                    
+                }
             })
         })
     })
@@ -264,7 +268,7 @@ filterContainer.appendChild(ustensilFilter)
 
 // Search by name, appliance, ingredient or ustensil
 input.addEventListener("input", (e)=>{
-    if ( e.target.value.length >= 3 ) {
+    if ( e.target.value.length > 2 ) {
         let word = e.target.value
         recipeContainer.innerHTML = ""
         if (document.querySelectorAll(".dropdown-menu") !== null) {
@@ -274,12 +278,12 @@ input.addEventListener("input", (e)=>{
         }
         search(recipeArray, (item)=>{
             const ingredients = search(item.ingredients, (ingredient) =>{
-                if (ingredient.ingredient.toLowerCase().includes(word)) {
+                if (ingredient.ingredient.toLowerCase()) {
                     return ingredient
                 }
             })
             const ustensils = search(item.ustensils, (ustensil) =>{
-                if (ustensil.toLowerCase().includes(word)) {
+                if (ustensil.toLowerCase()) {
                     return ustensil
                 }
             })
