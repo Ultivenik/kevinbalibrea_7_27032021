@@ -260,7 +260,7 @@ const filterResultByTag = () => {
 
 //************************************************************************************************* SEARCH ALGORYTHM
 
-function search(array, searchAction){
+const search = (array, searchAction) => {
     const filteredElement = []
     for (const item of array) {
         const element = searchAction(item)
