@@ -1,5 +1,11 @@
-
 const recipeArray = Window.DATA
+let results = []
+let tags = []
+let word = ""
+let ingredientFilterInput = ""
+let ustensilFilterInput = ""
+let appliancesFilterInput = ""
+
 // DOM CONSTRUCT
 const filter = (color, type, nameClass) => {
     const containerFilter = container(color)
@@ -11,12 +17,16 @@ const filter = (color, type, nameClass) => {
 
     containerFilter.classList.add(nameClass)
     containerFilter.appendChild(filterButton)
+    containerFilter.appendChild(filterSearchBar)
     containerFilter.appendChild(filterIcon)
     containerFilter.appendChild(filterListContainer)
     filterListContainer.style.display = "none"
+    filterSearchBar.style.display ="none"
 
-    filterButton.addEventListener("click", () => {
-        containerFilter.replaceChild(filterSearchBar, filterButton)
+    filterButton.addEventListener("click", (e) => {
+        const typeButton = e.currentTarget.textContent
+        filterButton.style.display ="none"
+        filterSearchBar.style.display ="block"
         filterIcon.classList.replace("fa-chevron-down", "fa-chevron-up")
         filterListContainer.removeAttribute("style")
         filterListContainer.classList.add("d-flex", "flex-wrap")
@@ -25,26 +35,43 @@ const filter = (color, type, nameClass) => {
 
         list.forEach(item =>{
             item.addEventListener("click", () =>{
-                containerFilter.replaceChild(filterButton, filterSearchBar)
+                filterButton.style.display = "block"
+                filterSearchBar.style.display ="none"
                 filterIcon.classList.replace("fa-chevron-up", "fa-chevron-down")
                 filterListContainer.classList.remove("d-flex", "flex-wrap")
                 containerFilter.classList.remove("col-4")
                 filterListContainer.style.display = "none"
-                if (filterSearchBar !== null) {
-                    containerFilter.replaceChild(filterButton, filterSearchBar)
-                    
-                }
             })
         })
+        //Filtering in the filter dropdown
+        switch (typeButton) {
+            case "Ingredients":
+            document.getElementById("IngredientsInput").addEventListener("input", (e)=>{
+                ingredientFilterInput = e.currentTarget.value
+                displayResults()
+            })
+            break
+            case "Appareils":
+                document.getElementById("ApplianceInput").addEventListener("input", (e)=>{
+                    appliancesFilterInput = e.currentTarget.value
+                    displayResults()
+                })
+            break
+            case "Ustensiles":
+                document.getElementById("UstensilsInput").addEventListener("input", (e)=>{
+                    ustensilFilterInput = e.currentTarget.value
+                    displayResults()
+                })
+            break;
+        }
     })
-
     return containerFilter
 }
 
 const container = (color) =>
 {
     const containerBox = document.createElement("div")
-    containerBox.classList.add("dropdown", `bg-${color}`, "rounded-3")
+    containerBox.classList.add("dropdown", `bg-${color}`, "rounded-3", "d-flex", "justify-content-between")
     return containerBox
 }
 
@@ -71,21 +98,44 @@ const listContainer = (color, type) => {
     filterList.id = `${type}`
     return filterList
 }
-
-const createList = (content) => {
+ const matchedValues = (arr, arr2) => {
+   let ret = [];
+    for(let i in arr2) {
+        if(arr.indexOf(arr2[i]) > -1){
+            ret.push(arr2[i]);
+        }
+    }
+    return ret;
+};
+const createList = (content, color) => {
     const list = document.createElement("li")
     list.classList.add("dropdown-item", "text-light")
     list.innerHTML = content
     list.addEventListener("click", () => {
-        let tag = searchtag(content)
+        let tag = searchtag(content, color)
         document.querySelector(".input-container").appendChild(tag)
+        tags.push(content)
+
+            //cliquer sur une liste reafiche la recherche  avec l'occurence choisie
+        recipeContainer.innerHTML = ""
+        filterResultByTag()
+        displayResults()
+
+        //cliquer sur un tag supprime le filtre
+        tag.addEventListener('click', (e)=>{
+            const tagValue = e.target.textContent
+            tags = tags.filter(tag => tag !== tagValue)
+            filterResults(word)
+            filterResultByTag()
+            displayResults()
+        })
     })
     return list
 }
 
 const iconFilter = () => {
     const icon = document.createElement("i")
-    icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light")
+    icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light", "align-self-center")
     return icon
 }
 // CARDS ********************************************************************
@@ -160,20 +210,22 @@ const quickSort = (array) =>
         return[...quickSort(leftArray), pivot, ...quickSort(rightArray)]
     }else if (leftArray.length > 0) {
         return [...quickSort(leftArray), pivot]
-    }else{
+    }else if (rightArray.length > 0){
         return[...quickSort(rightArray), pivot]
+    }else{
+        throw("Aucun résultat n'a été trouvé")
     }
 }
 
 // SEARCH TAGS ****************************************************************************
 
-const searchtag = (contentText) => {
+const searchtag = (contentText, color) => {
     let span = document.createElement("div")
     let containerContent = document.createElement("div")
     let content = document.createElement("div")
     let icon = document.createElement("i")
 
-    span.classList.add("toast", "show", "text-white", "bg-primary", "border-0", "d-inline-block", "w-0", "me-2", "mb-3")
+    span.classList.add("toast", "show", "text-white", `bg-${color}`, "border-0", "d-inline-block", "w-0", "me-2", "mb-3")
     containerContent.classList.add("d-flex")
     content.classList.add("toast-body")
     icon.classList.add("far", "fa-times-circle","me-2", "m-auto")
@@ -188,8 +240,8 @@ const searchtag = (contentText) => {
     })
     return span
 }
-const tagFilterList = (itemList, nameclass) => {
-    const list = createList(itemList)
+const FilterList = (itemList, nameclass, color) => {
+    const list = createList(itemList, color)
     if (document.querySelector(nameclass)) {
         document.querySelector(nameclass).appendChild(list)
     }
@@ -244,7 +296,6 @@ const inputGroup = document.createElement("div")
 const input = document.createElement("input")
 const icon = document.createElement("i")
 const recipeContainer = document.createElement("div")
-const results = []
 
 row.classList.add("row")
 mxAuto.classList.add("mx-auto", "input-container")
@@ -266,44 +317,18 @@ filterContainer.appendChild(ingredientFilter)
 filterContainer.appendChild(applianceFilter)
 filterContainer.appendChild(ustensilFilter)
 
-// Search by name, appliance, ingredient or ustensil
+// Search by name, appliance, ingredient or ustensil (main searchbar)
 input.addEventListener("input", (e)=>{
     if ( e.target.value.length > 2 ) {
-        let word = e.target.value
+        word = e.target.value
         recipeContainer.innerHTML = ""
-        if (document.querySelectorAll(".dropdown-menu") !== null) {
-            document.querySelectorAll(".dropdown-menu").forEach(list =>{
-                list.innerHTML = ""
-            })
-        }
-        search(recipeArray, (item)=>{
-            const ingredients = search(item.ingredients, (ingredient) =>{
-                if (ingredient.ingredient.toLowerCase()) {
-                    return ingredient
-                }
-            })
-            const ustensils = search(item.ustensils, (ustensil) =>{
-                if (ustensil.toLowerCase()) {
-                    return ustensil
-                }
-            })
-            if (item.name.toLowerCase().includes(word) || ingredients.includes(word) || ustensils.includes(word)) {
-                return results.push(item)
-            }
-        })
-        new Set(results).forEach((result) => {
-            recipeContainer.appendChild(createCards(result))
-            for (const ingredients of result.ingredients) {
-                tagFilterList(ingredients.ingredient, "#Ingredients")
-            }
-            tagFilterList(result.appliance, "#Appareil")
-            for (const ustensils of result.ustensils) {
-                tagFilterList(ustensils, "#Ustensiles")
-            }
-        })
+        results = []
+        filterResults(word)
+        displayResults()
+            //displaying results
     }else {
         recipeContainer.innerHTML = ""
-        results.length = 0
+        results = []
         document.querySelectorAll(".dropdown-menu").forEach(list =>{
             list.innerHTML = ""
         })
@@ -311,4 +336,72 @@ input.addEventListener("input", (e)=>{
 })
 main.appendChild(recipeContainer)
 
-
+const displayResults = () => {
+    if (document.querySelectorAll(".dropdown-menu") !== null) {
+        document.querySelectorAll(".dropdown-menu").forEach(list =>{
+            list.innerHTML = ""
+        })
+    }
+    //display ingredient
+    const ingredients = results.map(item =>item.ingredients).reduce((value, currentValue)=>
+    [...value, ...currentValue.map(value=>value.ingredient)], [])
+    for (const ingredient of new Set(ingredients)) {
+        if (!ingredientFilterInput || ingredient.toLowerCase().includes(ingredientFilterInput)) {
+            FilterList(ingredient, "#Ingredients", "primary")
+        }
+    }
+    //display ustensils
+    const ustensils = results.map(item =>item.ustensils).reduce((value, currentValue)=>
+    [...value, ...currentValue], [])
+    for (const ustensil of new Set(ustensils)) {
+        if (!ustensilFilterInput || ustensil.toLowerCase().includes(ustensilFilterInput)) {
+            FilterList(ustensil, "#Ustensiles", "danger")
+        }
+    }
+    //display appliance
+    const appliance = results.map(item =>item.appliance)
+    for (const appliances of new Set(appliance)) {
+        if (!appliancesFilterInput || appliances.toLowerCase().includes(appliancesFilterInput)) {
+            FilterList(appliances, "#Appareils", "success")
+        }
+    }
+    recipeContainer.innerHTML = ""
+    new Set(quickSort(results)).forEach((result) => {
+        //display cards
+        recipeContainer.appendChild(createCards(result))
+    })
+}
+ const filterResultByTag = () => {
+     if (tags.length === 0) {
+         return
+     }
+    const newResult = []
+    for (const [index, value] of Object.entries(results)) {
+        if (
+            value.ingredients.map(item=>tags.map(tag=>item.ingredient.includes(tag)).indexOf(true) > -1).indexOf(true) > -1 ||
+            value.appliance.indexOf(tags.map(tag=>value.appliance.includes(tag)).indexOf(true) > -1) > -1 ||
+            value.ustensils.map(item=>tags.map(tag=>item.includes(tag)).indexOf(true) > -1).indexOf(true) > -1
+        ){
+            newResult.push(value)
+        }
+    }
+    results = newResult
+ }
+ const filterResults = (word) =>{
+    results = search(recipeArray, (item)=>{
+        console.log(word);
+        const ingredients = search(item.ingredients, (ingredient) =>{
+            if (ingredient.ingredient.toLowerCase().includes(word)) {
+                return ingredient
+            }
+        }).map(item=> item.ingredient.toLowerCase())
+        const ustensils = search(item.ustensils, (ustensil) =>{
+            if (ustensil.toLowerCase().includes(word)) {
+                return ustensil
+            }
+        })
+        if (item.name.toLowerCase().includes(word) || ingredients.length > 0 || ustensils.length > 0) {
+            return item
+        }
+    })
+ }
