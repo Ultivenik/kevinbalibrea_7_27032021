@@ -7,7 +7,7 @@ let ingredientFilterInput = ""
 let ustensilFilterInput = ""
 let appliancesFilterInput = ""
 
-// DOM CONSTRUCT
+// ************************************************************************ DOM CONSTRUCT
 const filter = (color, type, nameClass) => {
     const containerFilter = container(color)
     const filterIcon = iconFilter()
@@ -109,12 +109,12 @@ const createList = (content, color) => {
         document.querySelector(".input-container").appendChild(tag)
         tags.push(content)
 
-            //cliquer sur une liste reafiche la recherche  avec l'occurence choisie
+        //search by tag
         recipeContainer.innerHTML = ""
         filterResultByTag()
         displayResults()
 
-        //cliquer sur un tag supprime le filtre
+        //delete filter tag
         tag.addEventListener('click', (e)=>{
             const tagValue = e.target.textContent
             tags = tags.filter(tag => tag !== tagValue)
@@ -132,7 +132,7 @@ const iconFilter = () => {
     return icon
 }
 
-// CARDS ********************************************************************
+// **************************************************************************************CARDS ********************************************************************
 
 const createCards = (recipe) =>
 {
@@ -182,7 +182,7 @@ const createCards = (recipe) =>
     return container
 }
 
-// SORTING ALGORYTHM ********************************************************************
+// ************************************************************************************************SORTING ALGORYTHM ********************************************************************
 
 const quickSort = (array) =>
 {
@@ -204,12 +204,14 @@ const quickSort = (array) =>
         return[...quickSort(leftArray), pivot, ...quickSort(rightArray)]
     }else if (leftArray.length > 0) {
         return [...quickSort(leftArray), pivot]
-    }else{
+    }else if (rightArray.length > 0){
         return[...quickSort(rightArray), pivot]
+    }else{
+        recipeContainer.innerHTML = "Aucune recette ne correspond à votre critère... vous pouvez chercher « tarte aux pommes », « poisson », etc."
     }
 }
 
-// SEARCH TAGS ****************************************************************************
+//*************************************************************************************************  SEARCH TAGS ****************************************************************************
 
 const searchtag = (contentText, color) => {
     let span = document.createElement("div")
@@ -232,6 +234,7 @@ const searchtag = (contentText, color) => {
     })
     return span
 }
+
 const FilterList = (itemList, nameclass, color) => {
     const list = createList(itemList, color)
     if (document.querySelector(nameclass)) {
@@ -240,36 +243,94 @@ const FilterList = (itemList, nameclass, color) => {
     return list
 }
 
-// SEARCH ALGORYTHM
+//displaying main result by clicking on tags
+const filterResultByTag = () => {
+     if (tags.length === 0) {
+         return
+     }
+    const newResult = []
+    for (const [index, value] of Object.entries(results)) {
+        if (
+            value.ingredients.map(item=>tags.map(tag=>item.ingredient.includes(tag)).indexOf(true) > -1).indexOf(true) > -1 ||
+            value.appliance.indexOf(tags.map(tag=>value.appliance.includes(tag)).indexOf(true) > -1) > -1 ||
+            value.ustensils.map(item=>tags.map(tag=>item.includes(tag)).indexOf(true) > -1).indexOf(true) > -1
+        ){
+            newResult.push(value)
+        }
+    }
+    results = newResult
+}
+
+//********************************************************************************************* SEARCH ALGORYTHM
 const searchAlgo = (array, searchAction) => {
     const filteredELements = array.filter((item) => searchAction(item))
     return filteredELements
 }
 
-const tagFilterList = (itemList, nameclass) => {
-    const list = createList(itemList)
-    if (document.querySelector(nameclass)) {
-        document.querySelector(nameclass).appendChild(list)
+//display result in filter list section
+const displayResults = () => {
+    if (document.querySelectorAll(".dropdown-menu") !== null) {
+        document.querySelectorAll(".dropdown-menu").forEach(list =>{
+            list.innerHTML = ""
+        })
     }
-    return list
+    //display ingredient
+    const ingredients = results.map(item =>item.ingredients).reduce((value, currentValue)=>
+    [...value, ...currentValue.map(value=>value.ingredient)], [])
+    for (const ingredient of new Set(ingredients)) {
+        if (!ingredientFilterInput || ingredient.toLowerCase().includes(ingredientFilterInput)) {
+            FilterList(ingredient, "#Ingredients", "primary")
+        }
+    }
+    //display ustensils
+    const ustensils = results.map(item =>item.ustensils).reduce((value, currentValue)=>
+    [...value, ...currentValue], [])
+    for (const ustensil of new Set(ustensils)) {
+        if (!ustensilFilterInput || ustensil.toLowerCase().includes(ustensilFilterInput)) {
+            FilterList(ustensil, "#Ustensiles", "danger")
+        }
+    }
+    //display appliance
+    const appliance = results.map(item =>item.appliance)
+    for (const appliances of new Set(appliance)) {
+        if (!appliancesFilterInput || appliances.toLowerCase().includes(appliancesFilterInput)) {
+            FilterList(appliances, "#Appareils", "success")
+        }
+    }
+    recipeContainer.innerHTML = ""
+    new Set(quickSort(results)).forEach((result) => {
+        //display cards
+        recipeContainer.appendChild(createCards(result))
+    })
 }
 
+//displaying results in resultContainer for main search
+ const filterResults = (word) =>{
+    results = searchAlgo(recipeArray, (item)=>{
+        const name = item.name.toLowerCase()
+        const appliance = item.appliance.toLowerCase()
+        const ingredient = item.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
+        const ustensil = item.ustensils.map(ustensil => {return ustensil.toLowerCase()})
+        if (name.includes(word) || appliance.includes(word) || ingredient.includes(word) || ustensil.includes(word)) {
+            return item
+        }
+    })
+ }
 
-// HEADER ********************************************************************
+// **********************************************************************************************HEADER ********************************************************************
 const header = document.createElement("header")
 const logo = document.createElement("img")
 logo.src = "./logo.png"
 logo.classList.add("mx-auto", "d-block", "w-3", "pt-5", "pb-5")
 document.body.appendChild(header)
 header.appendChild(logo)
-header.addEventListener("click", ()=>{console.clear()})
 
-// MAIN ********************************************************************
+// ***********************************************************************************************MAIN ********************************************************************
 const main = document.createElement("main")
 main.classList.add("col-10", "mx-auto")
 document.body.appendChild(main)
 
-// FILTER ********************************************************************
+// ***********************************************************************************************FILTER ********************************************************************
 const filterContainer = document.createElement("div")
 
 // INGREDIENTS
@@ -285,7 +346,7 @@ filterContainer.classList.add("d-flex", "filterResult")
 applianceFilter.classList.add("ms-3", "me-3")
 
 
-// CONTAINER & SEARCHBAR ********************************************************************
+// **************************************************************************************************CONTAINER & SEARCHBAR ********************************************************************
 const row = document.createElement("div")
 const mxAuto = document.createElement("div")
 const inputGroup = document.createElement("div")
@@ -331,65 +392,3 @@ input.addEventListener("input", (e)=>{
 })
 main.appendChild(recipeContainer)
 
-const displayResults = () => {
-    if (document.querySelectorAll(".dropdown-menu") !== null) {
-        document.querySelectorAll(".dropdown-menu").forEach(list =>{
-            list.innerHTML = ""
-        })
-    }
-    //display ingredient
-    const ingredients = results.map(item =>item.ingredients).reduce((value, currentValue)=>
-    [...value, ...currentValue.map(value=>value.ingredient)], [])
-    for (const ingredient of new Set(ingredients)) {
-        if (!ingredientFilterInput || ingredient.toLowerCase().includes(ingredientFilterInput)) {
-            FilterList(ingredient, "#Ingredients", "primary")
-        }
-    }
-    //display ustensils
-    const ustensils = results.map(item =>item.ustensils).reduce((value, currentValue)=>
-    [...value, ...currentValue], [])
-    for (const ustensil of new Set(ustensils)) {
-        if (!ustensilFilterInput || ustensil.toLowerCase().includes(ustensilFilterInput)) {
-            FilterList(ustensil, "#Ustensiles", "danger")
-        }
-    }
-    //display appliance
-    const appliance = results.map(item =>item.appliance)
-    for (const appliances of new Set(appliance)) {
-        if (!appliancesFilterInput || appliances.toLowerCase().includes(appliancesFilterInput)) {
-            FilterList(appliances, "#Appareils", "success")
-        }
-    }
-    recipeContainer.innerHTML = ""
-    new Set(quickSort(results)).forEach((result) => {
-        //display cards
-        recipeContainer.appendChild(createCards(result))
-    })
-}
- const filterResultByTag = () => {
-     if (tags.length === 0) {
-         return
-     }
-    const newResult = []
-    for (const [index, value] of Object.entries(results)) {
-        if (
-            value.ingredients.map(item=>tags.map(tag=>item.ingredient.includes(tag)).indexOf(true) > -1).indexOf(true) > -1 ||
-            value.appliance.indexOf(tags.map(tag=>value.appliance.includes(tag)).indexOf(true) > -1) > -1 ||
-            value.ustensils.map(item=>tags.map(tag=>item.includes(tag)).indexOf(true) > -1).indexOf(true) > -1
-        ){
-            newResult.push(value)
-        }
-    }
-    results = newResult
- }
- const filterResults = (word) =>{
-    results = searchAlgo(recipeArray, (item)=>{
-        const name = item.name.toLowerCase()
-        const appliance = item.appliance.toLowerCase()
-        const ingredient = item.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
-        const ustensil = item.ustensils.map(ustensil => {return ustensil.toLowerCase()})
-        if (name.includes(word) || appliance.includes(word) || ingredient.includes(word) || ustensil.includes(word)) {
-            return item
-        }
-    })
- }
