@@ -311,6 +311,8 @@ const displayResults = () => {
         const appliance = item.appliance.toLowerCase()
         const ingredient = item.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
         const ustensil = item.ustensils.map(ustensil => {return ustensil.toLowerCase()})
+        console.log(name.includes(word), appliance.includes(word), ingredient.includes(word), ustensil.includes(word))
+        console.log(word, name, appliance, ingredient, ustensil);
         if (name.includes(word) || appliance.includes(word) || ingredient.includes(word) || ustensil.includes(word)) {
             return item
         }
@@ -377,7 +379,7 @@ filterContainer.appendChild(ustensilFilter)
 // Search by name, appliance, ingredient or ustensil
 input.addEventListener("input", (e)=>{
     if ( e.target.value.length > 2 ) {
-        let word = e.target.value
+        word = e.target.value
         recipeContainer.innerHTML = ""
         results = []
         filterResults(word)
