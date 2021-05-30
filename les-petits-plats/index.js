@@ -169,13 +169,17 @@ const createCards = (recipe) =>
     title.innerHTML = recipe.name
     time.innerHTML = "<i class='far fa-clock me-2'></i>" + recipe.time + "min"
     recipeText.innerHTML = recipe.description
+    console.log(recipeText.innerHTML.length);
+    if (recipeText.innerHTML.length >= 200 ) {
+        recipeText.innerHTML = recipe.description.substring(0, 215) + '...'
+    }
 
     recipe.ingredients.map(item =>{
         const list = document.createElement("li")
         if (item.quantity === undefined || item.unit === undefined) {
             list.innerHTML = `${item.ingredient}`
         }else{
-            list.innerHTML = `${item.ingredient}: ${item.quantity} ${item.unit} `
+            list.innerHTML = `${item.ingredient}: <span>${item.quantity} ${item.unit}</span> `
         }
         ingredientList.appendChild(list)
     })
@@ -311,8 +315,6 @@ const displayResults = () => {
         const appliance = item.appliance.toLowerCase()
         const ingredient = item.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
         const ustensil = item.ustensils.map(ustensil => {return ustensil.toLowerCase()})
-        console.log(name.includes(word), appliance.includes(word), ingredient.includes(word), ustensil.includes(word))
-        console.log(word, name, appliance, ingredient, ustensil);
         if (name.includes(word) || appliance.includes(word) || ingredient.includes(word) || ustensil.includes(word)) {
             return item
         }

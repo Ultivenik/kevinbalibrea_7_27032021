@@ -19,12 +19,6 @@ body .col-9 .dropdown{
     outline: none !important;
     border: 0;
 }
-/* button[data-bs-toggle]{
-    border-radius: 5px;
-}
-.filterResult .dropdown{
-    border-radius: 5px;
-} */
 .dropdown .dropdown-menu{
     width: 100%;
     border: 0;
@@ -46,5 +40,24 @@ body .col-9 .dropdown{
     cursor: pointer;
 }
 .card{
-    width: 33.33%;
+    width: 31.33%;
 }
+ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0 !important;
+    width: 150vw;
+    font-size: .8em;
+}
+li{
+    font-weight: bold;
+}
+li span{
+    font-weight: normal;
+}
+.card-text{
+    font-size: .8em;
+    width: 146vw;
+    overflow: hidden;
+}
+
