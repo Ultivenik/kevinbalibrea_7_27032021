@@ -167,6 +167,9 @@ const createCards = (recipe) =>
     title.innerHTML = recipe.name
     time.innerHTML = "<i class='far fa-clock me-2'></i>" + recipe.time + "min"
     recipeText.innerHTML = recipe.description
+    if (recipeText.innerHTML.length > 200) {
+        recipeText.innerHTML = recipe.description.substring(0, 220) + "..."
+    }
 
     recipe.ingredients.map(item =>{
         const list = document.createElement("li")
