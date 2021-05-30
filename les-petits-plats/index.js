@@ -176,7 +176,7 @@ const createCards = (recipe) =>
         if (item.quantity === undefined || item.unit === undefined) {
             list.innerHTML = `${item.ingredient}`
         }else{
-            list.innerHTML = `${item.ingredient}: ${item.quantity} ${item.unit} `
+            list.innerHTML = `${item.ingredient}: <span>${item.quantity} ${item.unit}</span>`
         }
         ingredientList.appendChild(list)
     })
