@@ -60,4 +60,20 @@ li span{
     width: 146vw;
     overflow: hidden;
 }
+.card .card-body{
+    flex: unset;
+
+}
+.img-fluid{
+    height: 208px !important;
+}
+.time{
+    font-size: 1.3em;
+    font-weight: 600;
+
+}
+.title{
+    font-size: 1.4em;
+    margin: 0;padding: 0;
+}
 

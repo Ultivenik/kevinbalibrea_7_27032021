@@ -145,15 +145,16 @@ const createCards = (recipe) =>
     const icon = document.createElement("i")
 
     container.classList.add("card", "mb-5")
-    img.classList.add("card-img-top")
+    img.classList.add("img-fluid")
     textContainer.classList.add("card-body", "d-flex", "justify-content-between")
     listTextContainer.classList.add("card-body", "d-flex", "justify-content-between")
-    title.classList.add("card-title")
+    title.classList.add("card-title", "title")
     recipeText.classList.add("card-text")
     icon.classList.add("far", "fa-clock")
-    time.classList.add("d-flex", "align-items-baseline")
+    time.classList.add("d-flex", "align-items-baseline", "time")
 
     img.src = "..."
+
 
     container.appendChild(img)
     container.appendChild(textContainer)
