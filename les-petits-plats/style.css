@@ -55,6 +55,9 @@ li{
 li span{
     font-weight: normal !important;
 }
+.card, img{
+    border-radius: .6em !important;
+}
 .card-text{
     font-size: .8em !important;
     width: 146vw;
