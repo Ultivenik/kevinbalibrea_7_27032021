@@ -144,7 +144,7 @@ const createCards = (recipe) =>
     const recipeText = document.createElement("p")
     const icon = document.createElement("i")
 
-    container.classList.add("card")
+    container.classList.add("card", "mb-5")
     img.classList.add("card-img-top")
     textContainer.classList.add("card-body", "d-flex", "justify-content-between")
     listTextContainer.classList.add("card-body", "d-flex", "justify-content-between")
