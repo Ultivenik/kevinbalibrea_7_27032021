@@ -153,7 +153,7 @@ const createCards = (recipe) =>
     icon.classList.add("far", "fa-clock")
     time.classList.add("d-flex", "align-items-baseline", "time")
 
-    img.src = "..."
+    img.src = "./img.png"
 
 
     container.appendChild(img)
