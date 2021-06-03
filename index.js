@@ -1,4 +1,3 @@
-// ***************************************************************** FUNCTIONS **************************************************************************
 const recipeArray = Window.DATA
 let results = []
 let tags = []
@@ -7,7 +6,7 @@ let ingredientFilterInput = ""
 let ustensilFilterInput = ""
 let appliancesFilterInput = ""
 
-// ************************************************************************ DOM CONSTRUCT
+// DOM CONSTRUCT
 const filter = (color, type, nameClass) => {
     const containerFilter = container(color)
     const filterIcon = iconFilter()
@@ -109,12 +108,12 @@ const createList = (content, color) => {
         document.querySelector(".input-container").appendChild(tag)
         tags.push(content)
 
-        //search by tag
+            //cliquer sur une liste reafiche la recherche  avec l'occurence choisie
         recipeContainer.innerHTML = ""
         filterResultByTag()
         displayResults()
 
-        //delete filter tag
+        //cliquer sur un tag supprime le filtre
         tag.addEventListener('click', (e)=>{
             const tagValue = e.target.textContent
             tags = tags.filter(tag => tag !== tagValue)
@@ -131,8 +130,7 @@ const iconFilter = () => {
     icon.classList.add("fas", "fa-chevron-down", "p-3", "text-light", "align-self-center")
     return icon
 }
-
-// **************************************************************************************CARDS ********************************************************************
+// CARDS ********************************************************************
 
 const createCards = (recipe) =>
 {
@@ -150,12 +148,13 @@ const createCards = (recipe) =>
     img.classList.add("img-fluid")
     textContainer.classList.add("card-body", "d-flex", "justify-content-between")
     listTextContainer.classList.add("card-body", "d-flex", "justify-content-between")
-    title.classList.add("card-title")
-    recipeText.classList.add("card-text", "title")
+    title.classList.add("card-title", "title")
+    recipeText.classList.add("card-text")
     icon.classList.add("far", "fa-clock")
     time.classList.add("d-flex", "align-items-baseline", "time")
 
     img.src = "./img.png"
+
 
     container.appendChild(img)
     container.appendChild(textContainer)
@@ -169,9 +168,8 @@ const createCards = (recipe) =>
     title.innerHTML = recipe.name
     time.innerHTML = "<i class='far fa-clock me-2'></i>" + recipe.time + "min"
     recipeText.innerHTML = recipe.description
-    console.log(recipeText.innerHTML.length);
-    if (recipeText.innerHTML.length >= 200 ) {
-        recipeText.innerHTML = recipe.description.substring(0, 215) + '...'
+    if (recipeText.innerHTML.length > 200) {
+        recipeText.innerHTML = recipe.description.substring(0, 220) + "..."
     }
 
     recipe.ingredients.map(item =>{
@@ -179,7 +177,7 @@ const createCards = (recipe) =>
         if (item.quantity === undefined || item.unit === undefined) {
             list.innerHTML = `${item.ingredient}`
         }else{
-            list.innerHTML = `${item.ingredient}: <span>${item.quantity} ${item.unit}</span> `
+            list.innerHTML = `${item.ingredient}: <span>${item.quantity} ${item.unit}</span>`
         }
         ingredientList.appendChild(list)
     })
@@ -238,7 +236,6 @@ const searchtag = (contentText, color) => {
     })
     return span
 }
-
 const FilterList = (itemList, nameclass, color) => {
     const list = createList(itemList, color)
     if (document.querySelector(nameclass)) {
@@ -249,9 +246,9 @@ const FilterList = (itemList, nameclass, color) => {
 
 //displaying main result by clicking on tags
 const filterResultByTag = () => {
-     if (tags.length === 0) {
+    if (tags.length === 0) {
          return
-     }
+    }
     const newResult = []
     for (const [index, value] of Object.entries(results)) {
         if (
@@ -265,10 +262,17 @@ const filterResultByTag = () => {
     results = newResult
 }
 
-//********************************************************************************************* SEARCH ALGORYTHM
-const searchAlgo = (array, searchAction) => {
-    const filteredELements = array.filter((item) => searchAction(item))
-    return filteredELements
+//************************************************************************************************* SEARCH ALGORYTHM
+
+const search = (array, searchAction) => {
+    const filteredElement = []
+    for (const item of array) {
+        const element = searchAction(item)
+        if (element) {
+            filteredElement.push(element)
+        }
+    }
+    return filteredElement
 }
 
 //display result in filter list section
@@ -308,20 +312,27 @@ const displayResults = () => {
     })
 }
 
-//displaying results in resultContainer for main search
+// displaying results in resultContainer for main search
  const filterResults = (word) =>{
-    results = searchAlgo(recipeArray, (item)=>{
-        const name = item.name.toLowerCase()
-        const appliance = item.appliance.toLowerCase()
-        const ingredient = item.ingredients.map(ingredient => {return ingredient.ingredient.toLowerCase()})
-        const ustensil = item.ustensils.map(ustensil => {return ustensil.toLowerCase()})
-        if (name.includes(word) || appliance.includes(word) || ingredient.includes(word) || ustensil.includes(word)) {
+    results = search(recipeArray, (item)=>{
+        const ingredients = search(item.ingredients, (ingredient) =>{
+            if (ingredient.ingredient.toLowerCase().includes(word)) {
+                return ingredient
+            }
+        }).map(item=> item.ingredient.toLowerCase())
+        const ustensils = search(item.ustensils, (ustensil) =>{
+            if (ustensil.toLowerCase().includes(word)) {
+                return ustensil
+            }
+        })
+        if (item.name.toLowerCase().includes(word) || ingredients.length > 0 || ustensils.length > 0) {
             return item
         }
     })
  }
 
 // **********************************************************************************************HEADER ********************************************************************
+
 const header = document.createElement("header")
 const logo = document.createElement("img")
 logo.src = "./logo.png"
@@ -330,6 +341,7 @@ document.body.appendChild(header)
 header.appendChild(logo)
 
 // ***********************************************************************************************MAIN ********************************************************************
+
 const main = document.createElement("main")
 main.classList.add("col-10", "mx-auto")
 document.body.appendChild(main)
@@ -350,7 +362,7 @@ filterContainer.classList.add("d-flex", "filterResult")
 applianceFilter.classList.add("ms-3", "me-3")
 
 
-// **************************************************************************************************CONTAINER & SEARCHBAR ********************************************************************
+// ******************************************************************************************CONTAINER & SEARCHBAR ********************************************************************
 const row = document.createElement("div")
 const mxAuto = document.createElement("div")
 const inputGroup = document.createElement("div")
@@ -378,7 +390,7 @@ filterContainer.appendChild(ingredientFilter)
 filterContainer.appendChild(applianceFilter)
 filterContainer.appendChild(ustensilFilter)
 
-// Search by name, appliance, ingredient or ustensil
+// Search by name, appliance, ingredient or ustensil (main searchbar)
 input.addEventListener("input", (e)=>{
     if ( e.target.value.length > 2 ) {
         word = e.target.value
