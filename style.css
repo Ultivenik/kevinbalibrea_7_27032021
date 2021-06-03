@@ -15,6 +15,9 @@ body .col-9 .dropdown{
 .dropdown input[data-bs-toggle]{
     border-radius: 5px;
 }
+.dropdown button{
+    border-radius: 5px;
+}
 .dropdown input:focus{
     outline: none !important;
     border: 0;
