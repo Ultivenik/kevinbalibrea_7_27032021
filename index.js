@@ -107,8 +107,10 @@ const createList = (content, color) => {
     list.addEventListener("click", () => {
         let tag = searchtag(content, color)
         document.querySelector(".input-container").appendChild(tag)
+        if (tags.includes(content)) {
+            tag.remove()
+        }
         tags.push(content)
-
         //search by tag
         recipeContainer.innerHTML = ""
         filterResultByTag()
@@ -227,14 +229,20 @@ const searchtag = (contentText, color) => {
     content.classList.add("toast-body")
     icon.classList.add("far", "fa-times-circle","me-2", "m-auto")
 
-    span.appendChild(containerContent)
-    containerContent.appendChild(content)
-    containerContent.appendChild(icon)
+    // if (tags.includes(contentText)) {
+    //     // tags = tags.filter(tag => tag !== content.innerHTML)
+    //     span.remove()
+    // }else{
+    // }
+        span.appendChild(containerContent)
+        containerContent.appendChild(content)
+        containerContent.appendChild(icon)
+        content.innerHTML = contentText
 
-    content.innerHTML = contentText
     span.addEventListener("click", ()=>{
         span.remove()
     })
+
     return span
 }
 
