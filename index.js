@@ -106,12 +106,17 @@ const createList = (content, color) => {
     list.addEventListener("click", () => {
         let tag = searchtag(content, color)
         document.querySelector(".input-container").appendChild(tag)
-        tags.push(content)
-
+        if (tags.includes(content)) {
+            tag.remove()
+        }else{
+            tags.push(content)
             //cliquer sur une liste reafiche la recherche  avec l'occurence choisie
-        recipeContainer.innerHTML = ""
-        filterResultByTag()
-        displayResults()
+            recipeContainer.innerHTML = ""
+            filterResultByTag()
+            displayResults()
+
+        }
+
 
         //cliquer sur un tag supprime le filtre
         tag.addEventListener('click', (e)=>{
