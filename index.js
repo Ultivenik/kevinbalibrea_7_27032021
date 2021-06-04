@@ -109,12 +109,13 @@ const createList = (content, color) => {
         document.querySelector(".input-container").appendChild(tag)
         if (tags.includes(content)) {
             tag.remove()
+        }else{
+            tags.push(content)
+            //search by tag
+            recipeContainer.innerHTML = ""
+            filterResultByTag()
+            displayResults()
         }
-        tags.push(content)
-        //search by tag
-        recipeContainer.innerHTML = ""
-        filterResultByTag()
-        displayResults()
 
         //delete filter tag
         tag.addEventListener('click', (e)=>{
