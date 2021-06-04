@@ -229,15 +229,10 @@ const searchtag = (contentText, color) => {
     content.classList.add("toast-body")
     icon.classList.add("far", "fa-times-circle","me-2", "m-auto")
 
-    // if (tags.includes(contentText)) {
-    //     // tags = tags.filter(tag => tag !== content.innerHTML)
-    //     span.remove()
-    // }else{
-    // }
-        span.appendChild(containerContent)
-        containerContent.appendChild(content)
-        containerContent.appendChild(icon)
-        content.innerHTML = contentText
+    span.appendChild(containerContent)
+    containerContent.appendChild(content)
+    containerContent.appendChild(icon)
+    content.innerHTML = contentText
 
     span.addEventListener("click", ()=>{
         span.remove()
