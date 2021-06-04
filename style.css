@@ -84,3 +84,28 @@ main .card{
     font-size: 1.4em;
 }
 
+@media (max-width:450px) and (max-width:900px) {
+    header img{
+        width: 20em;
+    }
+    .input-group .form-control::placeholder{
+        font-size: .6em;
+    }
+    .input-container .input-group .mt-2{
+        margin-top: .8em !important;
+        font-size: 1em !important;
+    }
+    .dropdown button{
+        font-size: .7em ;
+        padding: 1em !important;
+    }
+    .fa-chevron-down, .fa-chevron-up{
+        font-size: .7em;
+    }
+    main .body-search{
+        flex-direction: column;
+    }
+    main .body-search .card{
+        width: 100%;
+    }
+}
